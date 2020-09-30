@@ -18,7 +18,7 @@ Tested in ansible 2.9.13.
 
   `K8S03_IP: "192.168.100.3"`
 
-* Run k8s-deploy role:
+* Run k8s-prep role:
 
   `cd SRC/ansible`
 
