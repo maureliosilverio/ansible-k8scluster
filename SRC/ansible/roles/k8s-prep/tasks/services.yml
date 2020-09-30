@@ -1,0 +1,24 @@
+---
+- name: Ensure firewalld service is disabled and stopped
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: Create systemd dir for docker
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    recurse: yes
+
+- name: Ensure docker service is enable and running
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  
+- name: Setup docker daemon settings
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  notify: restart docker

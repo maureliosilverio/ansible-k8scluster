@@ -1,0 +1,7 @@
+[k8s]
+k8s01 ansible_host="{{ K8S01_IP }}"
+k8s02 ansible_host="{{ K8S02_IP }}"
+k8s03 ansible_host="{{ K8S03_IP }}"
+
+[ansible_local]
+ansible ansible_connection=local

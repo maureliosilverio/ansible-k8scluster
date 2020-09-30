@@ -1,0 +1,19 @@
+---
+- name: Disable swap
+  command: swapoff -a
+  changed_when: true
+  when: ansible_swaptotal_mb > 0
+  
+- name: Remove swap from fstab
+  lineinfile:
+    path: '/etc/fstab'
+    regexp: '\sswap\s'
+    state: 'absent'
+
+- name: Configure Sysctl
+  copy:
+    src: kubernetes.conf
+    dest: /etc/sysctl.d/kubernetes.conf
+  notify: apply sysctl
+  
+

@@ -1,0 +1,16 @@
+---
+- name: install docker repository
+  yum_repository:
+    name: docker-ce
+    description: Docker CE Stable
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: yes
+
+- name: install kuberentes repository
+  yum_repository:
+    name: kuberentes
+    description: K8S repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgcheck: no
+    enabled: yes

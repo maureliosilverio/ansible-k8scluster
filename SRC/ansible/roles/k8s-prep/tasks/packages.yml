@@ -1,0 +1,11 @@
+---
+- name: install basic packages
+  yum:
+    name: 
+      - yum-utils 
+      - device-mapper-persistent-data 
+      - lvm2
+      - docker-ce-{{ DOCKER_VERSION }}
+      - docker-ce-cli-{{ DOCKER_CLI_VERSION }}
+      - containerd.io-{{ CONTAINERD_VERSION }}
+    state: present

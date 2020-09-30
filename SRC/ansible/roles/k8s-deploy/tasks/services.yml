@@ -1,0 +1,6 @@
+---
+- name: Ensure kubelet service is enable and running
+  service:
+    name: kubelet
+    state: started
+    enabled: yes

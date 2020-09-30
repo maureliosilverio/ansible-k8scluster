@@ -1,0 +1,69 @@
+---
+- name: Create kube dir
+  file: 
+    name: /home/k8s/.kube
+    mode: '0755'
+    state: directory
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Pull K8s images
+  command: /usr/bin/kubeadm config images pull
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Run kubeadm init
+  shell: 
+    cmd: /usr/bin/kubeadm init --apiserver-advertise-address={{ K8S01_IP }} --pod-network-cidr={{ POD_CIDR }}
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Copy kubectl config file
+  copy: 
+    src: /etc/kubernetes/admin.conf
+    dest: /home/k8s/.kube/config
+    owner: k8s
+    group: k8s
+    remote_src: yes
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Copy kubelet config file
+  copy: 
+    src: sysconfig_kubelet
+    dest: /etc/sysconfig/kubelet
+  notify: restart kubelet
+
+- name: Template calico.yaml
+  template:
+    src: calico.yaml.j2
+    dest: /home/k8s/calico.yaml
+    owner: k8s
+    group: k8s
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Apply calico.yaml file
+  shell:
+    cmd: kubectl apply -f /home/k8s/calico.yaml
+  become: yes
+  become_user: k8s
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Pause for 1 minute to bring up cluster
+  pause:
+    minutes: 1
+
+- name: Create join command parameters
+  shell:
+    cmd: kubeadm token create --print-join-command | cut -d" " -f2-20
+  become: yes
+  become_user: k8s
+  register: join_command
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Set fact for join command
+  set_fact:
+    join_parameters: "{{ join_command.stdout }}"
+  when: ansible_default_ipv4.address == K8S01_IP
+
+- name: Join to the cluster
+  shell:
+    cmd: kubeadm {{ hostvars['k8s01']['join_parameters'] }}
+  when: ansible_default_ipv4.address != K8S01_IP || ansible_default_ipv4.address != K8S01_IP
+  register: command_output

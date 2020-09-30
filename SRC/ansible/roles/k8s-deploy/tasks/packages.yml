@@ -1,0 +1,8 @@
+---
+- name: Install kubernetes packages
+  yum:
+    name:
+      - kubeadm-{{ K8S_VERSION }}
+      - kubelet-{{ K8S_VERSION }}
+      - kubectl-{{ K8S_VERSION }}
+    state: present

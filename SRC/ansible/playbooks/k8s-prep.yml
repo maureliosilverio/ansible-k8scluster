@@ -1,0 +1,6 @@
+---
+- hosts: k8s
+  roles:
+    - k8s-prep
+  vars_files:
+    /opt/ansible/inventory/group_vars/vars.yml

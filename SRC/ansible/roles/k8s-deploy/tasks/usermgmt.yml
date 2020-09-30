@@ -1,0 +1,13 @@
+---
+- name: Add k8s group
+  group:
+    name: "{{ K8S_GROUP }}"
+    state: present
+
+- name: Add k8s user
+  user:
+    name: "{{ K8S_USER}}"
+    comment: Kubernetes User
+    shell: /bin/bash
+    groups: "k8s"
+    append: yes

@@ -1,0 +1,5 @@
+---
+- import_tasks: misc.yml
+- import_tasks: repositories.yml
+- import_tasks: packages.yml
+- import_tasks: services.yml
